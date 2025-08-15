@@ -455,13 +455,18 @@ Use examples from this MCP learning server where relevant to illustrate the conc
 
 async def main():
     """Run the MCP server."""
-    # Get transport from stdio
-    async with server.stdio() as stdio_streams:
+    from mcp.server.stdio import stdio_server
+    from mcp.types import ServerCapabilities
+
+    async with stdio_server() as (read_stream, write_stream):
         await server.run(
-            initialization_options=InitializationOptions(
-                server_name="mcp-learning-server", server_version="1.0.0"
+            read_stream,
+            write_stream,
+            InitializationOptions(
+                server_name="mcp-learning-server",
+                server_version="1.0.0",
+                capabilities=ServerCapabilities(tools={}, resources={}, prompts={}),
             ),
-            **stdio_streams,
         )
 
 
